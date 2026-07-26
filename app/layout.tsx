@@ -17,6 +17,16 @@ export const metadata: Metadata = {
   title: 'Plomberie Martin — Plombier chauffagiste au Raincy (93)',
   description:
     'Dépannage, rénovation de salle de bain, chauffage. Devis gratuit, intervention rapide au Raincy et alentours. Site de démonstration NEX-WEB.',
+  metadataBase: new URL('https://demo-artisan.nex-web.fr'),
+  openGraph: {
+    title: 'Plomberie Martin — Plombier chauffagiste au Raincy (93)',
+    description:
+      'Dépannage, rénovation de salle de bain, chauffage. Devis gratuit, intervention rapide. Site de démonstration NEX-WEB.',
+    type: 'website',
+    locale: 'fr_FR',
+    url: 'https://demo-artisan.nex-web.fr',
+  },
+  twitter: { card: 'summary_large_image' },
   robots: { index: false, follow: false }, // démo : pas d'indexation
 }
 
