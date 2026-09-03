@@ -1,13 +1,15 @@
 import { prisma } from '@/lib/prisma'
+import { requireSession } from '@/lib/auth'
 import { Collection } from '@/components/admin/Collection'
 import { PageHeader } from '@/components/admin/ui'
 
 export const dynamic = 'force-dynamic'
 
 export default async function EstimateurPage() {
+  const { tenant } = await requireSession()
   const [types, options] = await Promise.all([
-    prisma.estimateType.findMany({ orderBy: { order: 'asc' } }),
-    prisma.estimateOption.findMany({ orderBy: { order: 'asc' } }),
+    prisma.estimateType.findMany({ where: { tenant }, orderBy: { order: 'asc' } }),
+    prisma.estimateOption.findMany({ where: { tenant }, orderBy: { order: 'asc' } }),
   ])
   const typeOptions = types.map((t) => ({ value: t.id, label: t.label }))
   return (

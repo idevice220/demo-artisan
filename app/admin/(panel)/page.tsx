@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Inbox, Calculator, Star, Clock, ArrowRight, Receipt, Images, Megaphone, Phone, Wrench, Smartphone } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import { getSettings, toSite } from '@/lib/settings'
+import { requireSession } from '@/lib/auth'
 import { getStatus, parisNow } from '@/lib/hours'
 import { Card, Badge } from '@/components/admin/ui'
 import { timeAgo } from '@/lib/admin/format'
@@ -9,16 +10,17 @@ import { timeAgo } from '@/lib/admin/format'
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage() {
+  const { tenant } = await requireSession()
   const since = new Date(Date.now() - 7 * 86_400_000)
   const [settings, newLeads, weekEstimates, services, visibleServices, reviews, realisations, recent] = await Promise.all([
-    getSettings(),
-    prisma.lead.count({ where: { status: 'new' } }),
-    prisma.lead.count({ where: { kind: 'estimation', createdAt: { gte: since } } }),
-    prisma.service.count(),
-    prisma.service.count({ where: { visible: true } }),
-    prisma.review.count({ where: { visible: true } }),
-    prisma.realisation.count({ where: { visible: true } }),
-    prisma.lead.findMany({ orderBy: { createdAt: 'desc' }, take: 5 }),
+    getSettings(tenant),
+    prisma.lead.count({ where: { tenant,  status: 'new' } }),
+    prisma.lead.count({ where: { tenant,  kind: 'estimation', createdAt: { gte: since } } }),
+    prisma.service.count({ where: { tenant } }),
+    prisma.service.count({ where: { tenant,  visible: true } }),
+    prisma.review.count({ where: { tenant,  visible: true } }),
+    prisma.realisation.count({ where: { tenant,  visible: true } }),
+    prisma.lead.findMany({ where: { tenant }, orderBy: { createdAt: 'desc' }, take: 5 }),
   ])
   const site = toSite(settings)
   const status = getStatus(site.hours, parisNow(), { closedSuffix: site.hoursSuffix })

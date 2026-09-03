@@ -15,6 +15,7 @@ import { Contact } from '@/components/Contact'
 import { Footer } from '@/components/Footer'
 import { MobileBar } from '@/components/MobileBar'
 import { DemoBadge } from '@/components/DemoBadge'
+import { TenantBar } from '@/components/TenantBar'
 
 // Tout le contenu vient de la base (espace propriétaire) : rendu à chaque requête.
 export const dynamic = 'force-dynamic'
@@ -24,6 +25,7 @@ export default async function Home() {
   const hasBefore = existsSync(join(process.cwd(), 'public', 'images', 'sdb-avant.jpg'))
   return (
     <>
+      {d.personal && <TenantBar />}
       <Header site={d.site} />
       <main>
         <Hero site={d.site} communes={d.zones.map((z) => z.name)} />

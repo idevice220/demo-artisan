@@ -11,20 +11,31 @@ datasource db {
 
 /// Réglages clé/valeur (identité, textes, horaires en JSON…)
 model Setting {
-  key       String   @id
+  tenant    String   @default("demo")
+  key       String
   value     String
   updatedAt DateTime @updatedAt
+
+  @@id([tenant, key])
 }
 
-/// État de la démo (date de la dernière remise à zéro)
+/// Horodatages globaux (dernier nettoyage des copies expirées)
 model Meta {
   id        Int      @id
-  lastReset DateTime
-  seededAt  DateTime @default(now())
+  lastSweep DateTime @default(now())
+}
+
+/// Une copie de la démo : "demo" = version d'origine (lecture seule), sinon la copie privée d'un visiteur
+model Tenant {
+  id          String   @id
+  seedVersion String
+  createdAt   DateTime @default(now())
+  lastSeen    DateTime @default(now())
 }
 
 /// Photos téléversées depuis l'espace propriétaire (stockées en base)
 model Media {
+  tenant    String   @default("demo")
   id        String   @id @default(cuid())
   name      String
   mime      String
@@ -33,9 +44,12 @@ model Media {
   height    Int
   data      Bytes
   createdAt DateTime @default(now())
+
+  @@index([tenant])
 }
 
 model Service {
+  tenant  String  @default("demo")
   id      Int     @id @default(autoincrement())
   icon    String
   title   String
@@ -45,9 +59,12 @@ model Service {
   big     Boolean @default(false)
   order   Int     @default(0)
   visible Boolean @default(true)
+
+  @@index([tenant])
 }
 
 model EstimateType {
+  tenant   String           @default("demo")
   id       Int              @id @default(autoincrement())
   label    String
   icon     String
@@ -59,9 +76,12 @@ model EstimateType {
   order    Int              @default(0)
   visible  Boolean          @default(true)
   options  EstimateOption[]
+
+  @@index([tenant])
 }
 
 model EstimateOption {
+  tenant  String       @default("demo")
   id      Int          @id @default(autoincrement())
   typeId  Int
   type    EstimateType @relation(fields: [typeId], references: [id], onDelete: Cascade)
@@ -73,9 +93,11 @@ model EstimateOption {
   visible Boolean      @default(true)
 
   @@index([typeId])
+  @@index([tenant])
 }
 
 model Realisation {
+  tenant   String  @default("demo")
   id       Int     @id @default(autoincrement())
   title    String
   place    String
@@ -84,9 +106,12 @@ model Realisation {
   image    String
   order    Int     @default(0)
   visible  Boolean @default(true)
+
+  @@index([tenant])
 }
 
 model Zone {
+  tenant  String  @default("demo")
   id      Int     @id @default(autoincrement())
   name    String
   x       Float
@@ -94,9 +119,12 @@ model Zone {
   min     Int
   order   Int     @default(0)
   visible Boolean @default(true)
+
+  @@index([tenant])
 }
 
 model Review {
+  tenant  String  @default("demo")
   id      Int     @id @default(autoincrement())
   name    String
   place   String
@@ -106,36 +134,48 @@ model Review {
   rating  Int     @default(5)
   order   Int     @default(0)
   visible Boolean @default(true)
+
+  @@index([tenant])
 }
 
 model ProcessStep {
-  id    Int    @id @default(autoincrement())
-  n     String
-  title String
-  text  String
-  time  String
-  order Int    @default(0)
+  tenant String @default("demo")
+  id     Int    @id @default(autoincrement())
+  n      String
+  title  String
+  text   String
+  time   String
+  order  Int    @default(0)
+
+  @@index([tenant])
 }
 
 model Tarif {
+  tenant  String  @default("demo")
   id      Int     @id @default(autoincrement())
   label   String
   price   String
   note    String
   order   Int     @default(0)
   visible Boolean @default(true)
+
+  @@index([tenant])
 }
 
 model FaqItem {
+  tenant  String  @default("demo")
   id      Int     @id @default(autoincrement())
   q       String
   a       String
   order   Int     @default(0)
   visible Boolean @default(true)
+
+  @@index([tenant])
 }
 
 /// Demandes reçues depuis le site (formulaire de rappel, estimateur)
 model Lead {
+  tenant      String   @default("demo")
   id          Int      @id @default(autoincrement())
   kind        String // "contact" | "estimation"
   name        String
@@ -149,4 +189,6 @@ model Lead {
   photoId     String?
   status      String   @default("new") // "new" | "done"
   createdAt   DateTime @default(now())
+
+  @@index([tenant])
 }

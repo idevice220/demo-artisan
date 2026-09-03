@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import sharp from 'sharp'
 import { prisma } from '@/lib/prisma'
-import { ensureFresh } from '@/lib/demo'
+import { getOrCreateTenant, QUOTA } from '@/lib/demo'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -19,9 +19,8 @@ const schema = z.object({
   estimateMax: z.coerce.number().int().optional(),
 })
 
-/** Réception d'une demande depuis le site (JSON ou multipart avec une photo). */
+/** Réception d'une demande depuis le site : elle arrive dans la copie du visiteur (créée au besoin). */
 export async function POST(req: Request) {
-  await ensureFresh()
   let raw: Record<string, unknown> = {}
   let photo: File | null = null
   if (req.headers.get('content-type')?.includes('multipart/form-data')) {
@@ -35,15 +34,19 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(raw)
   if (!parsed.success) return NextResponse.json({ error: 'Vérifiez le formulaire' }, { status: 400 })
 
+  const res = NextResponse.json({ ok: true }, { status: 201 })
+  const tenant = await getOrCreateTenant(res)
+  if ((await prisma.lead.count({ where: { tenant } })) >= QUOTA.inbox) return NextResponse.json({ error: 'Limite de demandes atteinte pour cette démo' }, { status: 429 })
+
   let photoId: string | null = null
-  if (photo && photo.size <= 8 * 1024 * 1024 && photo.type.startsWith('image/')) {
+  if (photo && photo.size <= 8 * 1024 * 1024 && photo.type.startsWith('image/') && (await prisma.media.count({ where: { tenant } })) < QUOTA.media) {
     try {
       const out = await sharp(Buffer.from(await photo.arrayBuffer())).rotate().resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true }).webp({ quality: 80 }).toBuffer({ resolveWithObject: true })
-      const m = await prisma.media.create({ data: { name: `demande-${Date.now()}`, mime: 'image/webp', size: out.info.size, width: out.info.width, height: out.info.height, data: out.data } })
+      const m = await prisma.media.create({ data: { tenant, name: `demande-${Date.now()}`, mime: 'image/webp', size: out.info.size, width: out.info.width, height: out.info.height, data: out.data } })
       photoId = m.id
     } catch {}
   }
   const d = parsed.data
-  const lead = await prisma.lead.create({ data: { kind: d.kind, name: d.name, phone: d.phone, city: d.city || null, type: d.type || null, message: d.message || null, slot: d.slot || null, estimateMin: d.estimateMin ?? null, estimateMax: d.estimateMax ?? null, photoId } })
-  return NextResponse.json({ ok: true, id: lead.id }, { status: 201 })
+  await prisma.lead.create({ data: { tenant, kind: d.kind, name: d.name, phone: d.phone, city: d.city || null, type: d.type || null, message: d.message || null, slot: d.slot || null, estimateMin: d.estimateMin ?? null, estimateMax: d.estimateMax ?? null, photoId } })
+  return res
 }
