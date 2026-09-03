@@ -3,54 +3,67 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { Phone, Camera, Send, Clock, MapPin, MessageCircle, X } from 'lucide-react'
-import { BUSINESS, HOURS_LABEL, ESTIMATE_TYPES } from '@/lib/data'
+import type { Site } from '@/lib/settings'
+import type { EstimateTypeT } from '@/lib/content'
 import { SectionHeading } from './Section'
 import { Reveal } from './Reveal'
 import { OpenStatus } from './Status'
 
 const field = 'w-full rounded-xl border border-line bg-white px-4 py-3 text-[15px] outline-none placeholder:text-ink/40 focus:border-amber focus:ring-2 focus:ring-amber/30'
+const SLOTS = [['Urgent', 'Urgent'], ['Matin', 'Matin'], ['Après-midi', 'Après-midi']]
 
-export function Contact() {
-  const [photo, setPhoto] = useState<{ name: string; url: string } | null>(null)
-  const [slot, setSlot] = useState('urgent')
+export function Contact({ site, types }: { site: Site; types: EstimateTypeT[] }) {
+  const [photo, setPhoto] = useState<{ file: File; url: string } | null>(null)
+  const [slot, setSlot] = useState('Urgent')
   const [sending, setSending] = useState(false)
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const form = e.currentTarget
+    const fd = new FormData(form)
+    fd.set('kind', 'contact')
+    fd.set('slot', slot)
+    if (photo) fd.set('photo', photo.file)
     setSending(true)
-    await new Promise((r) => setTimeout(r, 900))
-    setSending(false)
-    toast.success('Demande envoyée ! Je vous rappelle sous 15 minutes. (démo : aucun message n’est réellement transmis)')
-    form.reset()
-    setPhoto(null)
+    try {
+      const res = await fetch('/api/leads', { method: 'POST', body: fd })
+      if (!res.ok) throw new Error()
+      toast.success('Demande envoyée ! Je vous rappelle sous 15 minutes. Elle vient d’arriver dans l’espace propriétaire de la démo.')
+      form.reset()
+      setPhoto(null)
+      setSlot('Urgent')
+    } catch {
+      toast.error('Envoi impossible, réessayez ou appelez directement.')
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
     <section id="contact" className="bg-navy py-20 text-white lg:py-28">
       <div className="mx-auto max-w-6xl px-4">
-        <SectionHeading light eyebrow="Contact" title={<>Décrivez le problème, <span className="text-amber">je vous rappelle.</span></>} subtitle="Une photo vaut mieux qu’un long discours : joignez-la, je pourrai souvent vous donner le prix directement au téléphone." />
+        <SectionHeading light eyebrow="Contact" title={<>Décrivez le problème, <span className="text-amber">je vous rappelle.</span></>} subtitle="Une photo vaut mieux qu’un long discours : joignez-la, je pourrai souvent vous donner le prix directement au téléphone." />
 
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <Reveal>
             <div className="flex h-full flex-col justify-between gap-8 rounded-3xl bg-white/5 p-7 ring-1 ring-white/10">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber">Le plus rapide</p>
-                <a href={BUSINESS.tel} className="mt-2 block font-display text-5xl font-extrabold leading-none">{BUSINESS.phone}</a>
-                <OpenStatus light className="mt-3" />
+                <a href={site.tel} className="mt-2 block font-display text-5xl font-extrabold leading-none">{site.phone}</a>
+                <OpenStatus hours={site.hours} suffix={site.hoursSuffix} light className="mt-3" />
                 <div className="mt-5 flex flex-wrap gap-2">
-                  <a href={BUSINESS.tel} className="inline-flex items-center gap-2 rounded-full bg-amber px-4 py-2.5 font-display text-lg font-bold uppercase text-ink"><Phone size={17} /> Appeler</a>
-                  <a href={BUSINESS.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-ok px-4 py-2.5 font-display text-lg font-bold uppercase text-white"><MessageCircle size={17} /> WhatsApp</a>
+                  <a href={site.tel} className="inline-flex items-center gap-2 rounded-full bg-amber px-4 py-2.5 font-display text-lg font-bold uppercase text-ink"><Phone size={17} /> Appeler</a>
+                  <a href={site.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-ok px-4 py-2.5 font-display text-lg font-bold uppercase text-white"><MessageCircle size={17} /> WhatsApp</a>
                 </div>
               </div>
               <ul className="space-y-3 text-sm text-white/80">
-                {HOURS_LABEL.map((h) => (
+                {site.hoursRows.map((h) => (
                   <li key={h.d} className="flex items-center justify-between border-b border-white/10 pb-2">
                     <span className="inline-flex items-center gap-2"><Clock size={14} className="text-amber" /> {h.d}</span>
                     <span className="font-semibold text-white">{h.h}</span>
                   </li>
                 ))}
-                <li className="flex items-start gap-2 pt-1"><MapPin size={14} className="mt-1 text-amber" /> {BUSINESS.address}</li>
+                <li className="flex items-start gap-2 pt-1"><MapPin size={14} className="mt-1 text-amber" /> {site.address}</li>
               </ul>
             </div>
           </Reveal>
@@ -64,18 +77,18 @@ export function Contact() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-steel">Commune</span><input name="city" className={field} placeholder="Le Raincy" /></label>
                 <label className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-steel">Type de problème</span>
-                  <select name="type" className={field} defaultValue="fuite">
-                    {ESTIMATE_TYPES.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
-                    <option value="autre">Autre</option>
+                  <select name="type" className={field} defaultValue={types[0]?.label}>
+                    {types.map((t) => <option key={t.id} value={t.label}>{t.label}</option>)}
+                    <option value="Autre">Autre</option>
                   </select>
                 </label>
               </div>
-              <label className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-steel">Décrivez en deux mots *</span><textarea required name="message" rows={3} className={field} placeholder="Ex : fuite sous l’évier de la cuisine depuis ce matin, j’ai coupé l’eau." /></label>
+              <label className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-steel">Décrivez en deux mots *</span><textarea required name="message" rows={3} className={field} placeholder="Ex : fuite sous l’évier de la cuisine depuis ce matin, j’ai coupé l’eau." /></label>
 
               <div>
-                <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-steel">Quand ?</span>
+                <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-steel">Quand ?</span>
                 <div className="grid grid-cols-3 gap-2">
-                  {[['urgent', 'Urgent'], ['matin', 'Matin'], ['aprem', 'Après-midi']].map(([v, l]) => (
+                  {SLOTS.map(([v, l]) => (
                     <button type="button" key={v} onClick={() => setSlot(v)} className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition-colors ${slot === v ? 'border-navy bg-navy text-white' : 'border-line bg-paper text-navy hover:border-navy'}`}>{l}</button>
                   ))}
                 </div>
@@ -87,13 +100,13 @@ export function Contact() {
                   <div className="flex items-center gap-3 rounded-xl border border-line bg-paper p-2 pr-3">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={photo.url} alt="" className="h-14 w-14 rounded-lg object-cover" />
-                    <span className="flex-1 truncate text-sm">{photo.name}</span>
+                    <span className="flex-1 truncate text-sm">{photo.file.name}</span>
                     <button type="button" onClick={() => setPhoto(null)} className="grid h-8 w-8 place-items-center rounded-full hover:bg-line" aria-label="Retirer la photo"><X size={16} /></button>
                   </div>
-                ) : (
+                ) : (
                   <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-line bg-paper px-4 py-4 text-sm font-semibold text-steel transition-colors hover:border-amber hover:text-navy">
                     <Camera size={18} /> Prendre ou choisir une photo
-                    <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) setPhoto({ name: f.name, url: URL.createObjectURL(f) }) }} />
+                    <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) setPhoto({ file: f, url: URL.createObjectURL(f) }) }} />
                   </label>
                 )}
               </div>

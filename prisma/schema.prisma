@@ -1,0 +1,152 @@
+// Plomberie Martin (démo NEX-WEB) — schéma Prisma, PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Réglages clé/valeur (identité, textes, horaires en JSON…)
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+/// État de la démo (date de la dernière remise à zéro)
+model Meta {
+  id        Int      @id
+  lastReset DateTime
+  seededAt  DateTime @default(now())
+}
+
+/// Photos téléversées depuis l'espace propriétaire (stockées en base)
+model Media {
+  id        String   @id @default(cuid())
+  name      String
+  mime      String
+  size      Int
+  width     Int
+  height    Int
+  data      Bytes
+  createdAt DateTime @default(now())
+}
+
+model Service {
+  id      Int     @id @default(autoincrement())
+  icon    String
+  title   String
+  from    String
+  text    String
+  image   String?
+  big     Boolean @default(false)
+  order   Int     @default(0)
+  visible Boolean @default(true)
+}
+
+model EstimateType {
+  id       Int              @id @default(autoincrement())
+  label    String
+  icon     String
+  baseMin  Int
+  baseMax  Int
+  delay    String
+  includes String[]
+  surface  Boolean          @default(false)
+  order    Int              @default(0)
+  visible  Boolean          @default(true)
+  options  EstimateOption[]
+}
+
+model EstimateOption {
+  id      Int          @id @default(autoincrement())
+  typeId  Int
+  type    EstimateType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  label   String
+  addMin  Int
+  addMax  Int
+  note    String?
+  order   Int          @default(0)
+  visible Boolean      @default(true)
+
+  @@index([typeId])
+}
+
+model Realisation {
+  id       Int     @id @default(autoincrement())
+  title    String
+  place    String
+  cat      String
+  duration String
+  image    String
+  order    Int     @default(0)
+  visible  Boolean @default(true)
+}
+
+model Zone {
+  id      Int     @id @default(autoincrement())
+  name    String
+  x       Float
+  y       Float
+  min     Int
+  order   Int     @default(0)
+  visible Boolean @default(true)
+}
+
+model Review {
+  id      Int     @id @default(autoincrement())
+  name    String
+  place   String
+  date    String
+  text    String
+  tag     String
+  rating  Int     @default(5)
+  order   Int     @default(0)
+  visible Boolean @default(true)
+}
+
+model ProcessStep {
+  id    Int    @id @default(autoincrement())
+  n     String
+  title String
+  text  String
+  time  String
+  order Int    @default(0)
+}
+
+model Tarif {
+  id      Int     @id @default(autoincrement())
+  label   String
+  price   String
+  note    String
+  order   Int     @default(0)
+  visible Boolean @default(true)
+}
+
+model FaqItem {
+  id      Int     @id @default(autoincrement())
+  q       String
+  a       String
+  order   Int     @default(0)
+  visible Boolean @default(true)
+}
+
+/// Demandes reçues depuis le site (formulaire de rappel, estimateur)
+model Lead {
+  id          Int      @id @default(autoincrement())
+  kind        String // "contact" | "estimation"
+  name        String
+  phone       String
+  city        String?
+  type        String?
+  message     String?
+  slot        String?
+  estimateMin Int?
+  estimateMax Int?
+  photoId     String?
+  status      String   @default("new") // "new" | "done"
+  createdAt   DateTime @default(now())
+}

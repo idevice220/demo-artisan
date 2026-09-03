@@ -3,48 +3,67 @@
 import { useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
 import { Check, Clock, Send, Sparkles, Info } from 'lucide-react'
-import { ESTIMATE_TYPES, URGENCIES } from '@/lib/data'
+import type { EstimateTypeT } from '@/lib/content'
 import { SectionHeading } from './Section'
 import { Reveal } from './Reveal'
 import { ServiceIcon } from './Icons'
 
+const URGENCIES = [
+  { id: 'now', label: 'Aujourd’hui', sub: 'Urgence · majoration +30 %', mult: 1.3 },
+  { id: '48h', label: 'Sous 48 h', sub: 'Tarif normal', mult: 1 },
+  { id: 'plan', label: 'Je planifie', sub: 'Créneau au choix · −5 %', mult: 0.95 },
+]
 const round5 = (n: number) => Math.round(n / 5) * 5
-const eur = (n: number) => n.toLocaleString('fr-FR') + ' €'
+const eur = (n: number) => n.toLocaleString('fr-FR') + ' €'
 
-export function Estimateur() {
-  const [typeId, setTypeId] = useState(ESTIMATE_TYPES[0].id)
-  const [optionId, setOptionId] = useState(ESTIMATE_TYPES[0].options[0].id)
+export function Estimateur({ types }: { types: EstimateTypeT[] }) {
+  const [typeId, setTypeId] = useState(types[0]?.id)
+  const [optionId, setOptionId] = useState(types[0]?.options[0]?.id)
   const [urgencyId, setUrgencyId] = useState('48h')
   const [surface, setSurface] = useState(6)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [sending, setSending] = useState(false)
 
-  const type = ESTIMATE_TYPES.find((t) => t.id === typeId)!
-  const option = type.options.find((o) => o.id === optionId) ?? type.options[0]
+  const type = types.find((t) => t.id === typeId) ?? types[0]
+  const option = type?.options.find((o) => o.id === optionId) ?? type?.options[0]
   const urgency = URGENCIES.find((u) => u.id === urgencyId)!
 
   const [min, max] = useMemo(() => {
-    if (type.surface) return [round5(option.add[0] * surface), round5(option.add[1] * surface)]
-    const lo = (type.base[0] + option.add[0]) * urgency.mult
-    const hi = (type.base[1] + option.add[1]) * urgency.mult
+    if (!type || !option) return [0, 0]
+    if (type.surface) return [round5(option.addMin * surface), round5(option.addMax * surface)]
+    const lo = (type.baseMin + option.addMin) * urgency.mult
+    const hi = (type.baseMax + option.addMax) * urgency.mult
     return [round5(Math.min(lo, hi)), round5(Math.max(lo, hi))]
   }, [type, option, urgency, surface])
 
-  function pickType(id: string) {
-    const t = ESTIMATE_TYPES.find((x) => x.id === id)!
+  if (!type || !option) return null
+
+  function pickType(id: number) {
+    const t = types.find((x) => x.id === id)!
     setTypeId(id)
-    setOptionId(t.options[0].id)
+    setOptionId(t.options[0]?.id)
   }
 
   async function send(e: React.FormEvent) {
     e.preventDefault()
+    if (!type || !option) return
     setSending(true)
-    await new Promise((r) => setTimeout(r, 900))
-    setSending(false)
-    toast.success(`Estimation envoyée à ${name.split(' ')[0] || 'vous'} — je vous rappelle sous 15 min. (démo : rien n’est réellement envoyé)`)
-    setName('')
-    setPhone('')
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'estimation', name, phone, type: type.label, slot: type.surface ? 'Je planifie' : urgency.label, message: `${option.label}${type.surface ? ` · ${surface} m²` : ''}`, estimateMin: min, estimateMax: max }),
+      })
+      if (!res.ok) throw new Error()
+      toast.success(`Estimation envoyée à ${name.split(' ')[0] || 'vous'} — je vous rappelle sous 15 min. Elle vient d’arriver dans l’espace propriétaire de la démo.`)
+      setName('')
+      setPhone('')
+    } catch {
+      toast.error('Envoi impossible, réessayez.')
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -54,14 +73,13 @@ export function Estimateur() {
 
         <div className="grid gap-6 lg:grid-cols-[1.35fr_1fr]">
           <Reveal className="space-y-6">
-            {/* 1. type */}
             <div className="rounded-3xl bg-white/5 p-5 ring-1 ring-white/10 sm:p-6">
               <p className="mb-4 flex items-center gap-3 font-display text-xl font-bold uppercase tracking-wide">
                 <span className="grid h-8 w-8 place-items-center rounded-full bg-amber font-display text-lg text-ink">1</span> Quel est le problème&nbsp;?
               </p>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {ESTIMATE_TYPES.map((t) => {
-                  const active = t.id === typeId
+                {types.map((t) => {
+                  const active = t.id === type.id
                   return (
                     <button key={t.id} onClick={() => pickType(t.id)} className={`flex flex-col items-start gap-3 rounded-2xl border p-4 text-left transition-all ${active ? 'border-amber bg-amber text-ink shadow-amber' : 'border-white/10 bg-white/5 hover:border-white/30'}`}>
                       <ServiceIcon name={t.icon} size={22} strokeWidth={2.2} className={active ? 'text-ink' : 'text-amber'} />
@@ -72,7 +90,6 @@ export function Estimateur() {
               </div>
             </div>
 
-            {/* 2. précision */}
             <div className="rounded-3xl bg-white/5 p-5 ring-1 ring-white/10 sm:p-6">
               <p className="mb-4 flex items-center gap-3 font-display text-xl font-bold uppercase tracking-wide">
                 <span className="grid h-8 w-8 place-items-center rounded-full bg-amber font-display text-lg text-ink">2</span> Précisez
@@ -103,7 +120,6 @@ export function Estimateur() {
               )}
             </div>
 
-            {/* 3. urgence */}
             {!type.surface && (
               <div className="rounded-3xl bg-white/5 p-5 ring-1 ring-white/10 sm:p-6">
                 <p className="mb-4 flex items-center gap-3 font-display text-xl font-bold uppercase tracking-wide">
@@ -124,7 +140,6 @@ export function Estimateur() {
             )}
           </Reveal>
 
-          {/* résumé */}
           <Reveal delay={120} className="lg:sticky lg:top-28 lg:self-start">
             <div className="overflow-hidden rounded-3xl bg-white text-ink shadow-lift">
               <div className="hazard h-2" aria-hidden />
