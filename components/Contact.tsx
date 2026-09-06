@@ -75,7 +75,7 @@ export function Contact({ site, types }: { site: Site; types: EstimateTypeT[] })
                 <label className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-steel">Téléphone *</span><input required name="phone" inputMode="tel" className={field} placeholder="06 12 34 56 78" /></label>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-steel">Commune</span><input name="city" className={field} placeholder="Le Raincy" /></label>
+                <label className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-steel">Commune</span><input name="city" className={field} placeholder="Lyon" /></label>
                 <label className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-steel">Type de problème</span>
                   <select name="type" className={field} defaultValue={types[0]?.label}>
                     {types.map((t) => <option key={t.id} value={t.label}>{t.label}</option>)}

@@ -27,12 +27,12 @@ export function Zone({ zones, site }: { zones: ZoneRow[]; site: Site }) {
   return (
     <section id="zone" className="bg-white py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-4">
-        <SectionHeading eyebrow="Zone d’intervention" title={<>Le Raincy et tout <span className="text-amber-deep">l’Est parisien.</span></>} subtitle={`Basé au Raincy, je couvre ${zones.length > 1 ? `${zones.length} communes` : 'les communes voisines'}. Tapez la vôtre pour connaître mon délai d’intervention.`} />
+        <SectionHeading eyebrow="Zone d’intervention" title={<>Lyon et toute <span className="text-amber-deep">la métropole.</span></>} subtitle={`Basé à Lyon 3e, je couvre ${zones.length > 1 ? `${zones.length} communes` : 'les communes voisines'}. Tapez la vôtre pour connaître mon délai d’intervention.`} />
 
         <div className="grid items-center gap-8 lg:grid-cols-[1.2fr_0.8fr]">
           <Reveal>
             <div className="relative overflow-hidden rounded-3xl border border-line bg-paper shadow-card">
-              <svg viewBox="0 0 600 520" className="block h-auto w-full" role="img" aria-label="Carte stylisée des communes couvertes autour du Raincy">
+              <svg viewBox="0 0 600 520" className="block h-auto w-full" role="img" aria-label="Carte stylisée des communes couvertes autour de Lyon">
                 <defs>
                   <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
                     <path d="M24 0H0V24" fill="none" stroke="#10284A" strokeOpacity="0.06" />
@@ -72,7 +72,7 @@ export function Zone({ zones, site }: { zones: ZoneRow[]; site: Site }) {
               <label htmlFor="commune" className="font-display text-2xl font-bold uppercase">Vérifiez votre commune</label>
               <div className="relative mt-4">
                 <Search size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/50" />
-                <input id="commune" list="communes" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ex : Villemomble" className="w-full rounded-full border border-white/15 bg-white/10 py-3.5 pl-11 pr-4 text-[15px] text-white placeholder:text-white/40 outline-none focus:border-amber focus:ring-2 focus:ring-amber/30" />
+                <input id="commune" list="communes" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ex : Villeurbanne" className="w-full rounded-full border border-white/15 bg-white/10 py-3.5 pl-11 pr-4 text-[15px] text-white placeholder:text-white/40 outline-none focus:border-amber focus:ring-2 focus:ring-amber/30" />
                 <datalist id="communes">
                   {zones.map((z) => <option key={z.id} value={z.name} />)}
                 </datalist>

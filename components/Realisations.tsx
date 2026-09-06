@@ -38,7 +38,7 @@ export function Realisations({ items, hasBefore, spotlight }: { items: Realisati
   return (
     <section id="realisations" className="py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-4">
-        <SectionHeading eyebrow="Réalisations" title={<>Le résultat, <span className="text-amber-deep">pas des promesses.</span></>} subtitle="Faites glisser le curseur pour voir la transformation, puis parcourez quelques chantiers récents autour du Raincy." />
+        <SectionHeading eyebrow="Réalisations" title={<>Le résultat, <span className="text-amber-deep">pas des promesses.</span></>} subtitle="Faites glisser le curseur pour voir la transformation, puis parcourez quelques chantiers récents à Lyon et dans la métropole." />
 
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <Reveal>

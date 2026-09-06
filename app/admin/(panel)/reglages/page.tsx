@@ -12,7 +12,7 @@ const GROUPS: SettingsGroup[] = [
     fields: [
       { key: 'name', label: 'Nom de l’entreprise', type: 'text', required: true, half: true },
       { key: 'owner', label: 'Votre nom', type: 'text', required: true, half: true },
-      { key: 'tagline', label: 'Sous-titre (en-tête)', type: 'text', placeholder: 'Plombier chauffagiste · Le Raincy' },
+      { key: 'tagline', label: 'Sous-titre (en-tête)', type: 'text', placeholder: 'Plombier chauffagiste · Lyon' },
       { key: 'phone', label: 'Téléphone', type: 'text', required: true, half: true },
       { key: 'whatsapp', label: 'Numéro WhatsApp', type: 'text', half: true, help: 'Le bouton WhatsApp ouvre une conversation pré-remplie.' },
       { key: 'email', label: 'E-mail', type: 'text', half: true },

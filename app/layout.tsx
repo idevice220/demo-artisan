@@ -7,12 +7,12 @@ const display = Barlow_Condensed({ weight: ['600', '700', '800'], subsets: ['lat
 const sans = Barlow({ weight: ['400', '500', '600', '700'], subsets: ['latin'], variable: '--font-sans', display: 'swap' })
 
 export const metadata: Metadata = {
-  title: 'Plomberie Martin — Plombier chauffagiste au Raincy (93) · Dépannage en 45 min',
+  title: 'Plomberie Martin — Plombier chauffagiste à Lyon · Dépannage en 45 min',
   description:
-    'Fuite, débouchage, chauffe-eau, chaudière, salle de bain clé en main. Devis ferme avant intervention, prix affichés, intervention rapide dans tout l’Est parisien. Site de démonstration NEX-WEB.',
+    'Fuite, débouchage, chauffe-eau, chaudière, salle de bain clé en main. Devis ferme avant intervention, prix affichés, intervention rapide dans toute la métropole de Lyon. Site de démonstration NEX-WEB.',
   metadataBase: new URL('https://demo-artisan.nex-web.fr'),
   openGraph: {
-    title: 'Plomberie Martin — Plombier chauffagiste au Raincy (93)',
+    title: 'Plomberie Martin — Plombier chauffagiste à Lyon',
     description: 'Dépannage en 45 min, devis ferme, prix affichés. Fuite, chauffage, salle de bain. Site de démonstration NEX-WEB.',
     type: 'website',
     locale: 'fr_FR',

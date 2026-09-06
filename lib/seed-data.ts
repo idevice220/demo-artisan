@@ -4,7 +4,7 @@
 import type { HoursConfigRow } from './hours'
 
 /** À incrémenter quand les données ci-dessous changent : la version d'origine est alors recréée au déploiement. */
-export const SEED_VERSION = '2026-09-03.1'
+export const SEED_VERSION = '2026-09-06.1'
 
 export const DEFAULT_HOURS: HoursConfigRow[] = [
   { day: 1, closed: false, open: '07:30', close: '19:30' },
@@ -19,11 +19,11 @@ export const DEFAULT_HOURS: HoursConfigRow[] = [
 export const DEFAULT_SETTINGS: Record<string, string> = {
   name: 'Plomberie Martin',
   owner: 'Julien Martin',
-  tagline: 'Plombier chauffagiste · Le Raincy',
-  phone: '01 23 45 67 89',
-  whatsapp: '06 12 34 56 78',
+  tagline: 'Plombier chauffagiste · Lyon',
+  phone: '04 65 71 23 45',
+  whatsapp: '06 39 98 56 78',
   email: 'contact@plomberie-martin.fr',
-  address: '18 allée des Tilleuls, 93340 Le Raincy',
+  address: '18 rue Paul Bert, 69003 Lyon',
   rating: '4.9',
   reviews_count: '87',
   rating_split: '92,6,1,1,0',
@@ -33,7 +33,7 @@ export const DEFAULT_SETTINGS: Record<string, string> = {
   urgent_bar: 'Urgence plomberie 24h/24 · 7j/7 —',
   urgent_bar_strong: 'intervention en 45 min en moyenne',
   urgent_bar_on: 'true',
-  hero_eyebrow: 'Plombier chauffagiste · Le Raincy & Est parisien',
+  hero_eyebrow: 'Plombier chauffagiste · Lyon & métropole',
   hero_title: 'Une fuite ?',
   hero_title_2: 'Un artisan chez vous',
   hero_accent: 'en 45 min.',
@@ -47,10 +47,10 @@ export const DEFAULT_SETTINGS: Record<string, string> = {
   spotlight_budget: '8 900 €',
   spotlight_after: '/images/sdb-apres.jpg',
   spotlight_caption: 'Salle de bain refaite à neuf',
-  spotlight_place: 'Le Raincy · 9 jours',
+  spotlight_place: 'Lyon 3e · 9 jours',
   tarifs_points: 'Devis écrit et signé avant intervention\nPas de supplément pour le diagnostic\nPaiement en 3 fois sans frais dès 600 €\nFacture conforme pour votre assurance',
   tarifs_title: 'Grille tarifaire 2026',
-  footer_text: 'Artisan indépendant, assuré et garanti décennale. Dépannage, chauffage et rénovation de salle de bain dans tout l’Est parisien.',
+  footer_text: 'Artisan indépendant, assuré et garanti décennale. Dépannage, chauffage et rénovation de salle de bain dans toute la métropole de Lyon.',
   hours: JSON.stringify(DEFAULT_HOURS),
   hours_suffix: 'urgences 24h/24',
 }
@@ -98,42 +98,42 @@ export const ESTIMATE_TYPES = [
 ]
 
 export const REALISATIONS = [
-  { title: 'Douche à l’italienne et vasque suspendue', place: 'Le Raincy', cat: 'Salle de bain', duration: '9 jours', image: '/images/real-1.jpg' },
-  { title: 'Salle de bain familiale, carrelage grand format', place: 'Villemomble', cat: 'Salle de bain', duration: '11 jours', image: '/images/real-2.jpg' },
-  { title: 'Évier et mitigeur, cuisine rénovée', place: 'Gagny', cat: 'Dépannage', duration: '½ journée', image: '/images/real-3.jpg' },
-  { title: 'Remplacement de chaudière à condensation', place: 'Livry-Gargan', cat: 'Chauffage', duration: '1 journée', image: '/images/real-4.jpg' },
-  { title: 'Radiateurs et thermostat connecté', place: 'Montfermeil', cat: 'Chauffage', duration: '2 jours', image: '/images/real-5.jpg' },
-  { title: 'Meuble vasque double et robinetterie', place: 'Clichy-sous-Bois', cat: 'Salle de bain', duration: '3 jours', image: '/images/real-6.jpg' },
+  { title: 'Douche à l’italienne et vasque suspendue', place: 'Lyon 3e', cat: 'Salle de bain', duration: '9 jours', image: '/images/real-1.jpg' },
+  { title: 'Salle de bain familiale, carrelage grand format', place: 'Villeurbanne', cat: 'Salle de bain', duration: '11 jours', image: '/images/real-2.jpg' },
+  { title: 'Évier et mitigeur, cuisine rénovée', place: 'Bron', cat: 'Dépannage', duration: '½ journée', image: '/images/real-3.jpg' },
+  { title: 'Remplacement de chaudière à condensation', place: 'Caluire-et-Cuire', cat: 'Chauffage', duration: '1 journée', image: '/images/real-4.jpg' },
+  { title: 'Radiateurs et thermostat connecté', place: 'Vénissieux', cat: 'Chauffage', duration: '2 jours', image: '/images/real-5.jpg' },
+  { title: 'Meuble vasque double et robinetterie', place: 'Écully', cat: 'Salle de bain', duration: '3 jours', image: '/images/real-6.jpg' },
 ]
 
 export const ZONES = [
-  { name: 'Le Raincy', x: 0, y: 0, min: 10 },
-  { name: 'Villemomble', x: -2, y: 1.5, min: 15 },
-  { name: 'Gagny', x: 2.5, y: 1, min: 15 },
-  { name: 'Clichy-sous-Bois', x: 3, y: -1.5, min: 15 },
-  { name: 'Les Pavillons-sous-Bois', x: -1.5, y: -2, min: 15 },
-  { name: 'Livry-Gargan', x: 1, y: -3, min: 20 },
-  { name: 'Montfermeil', x: 4.5, y: 0, min: 20 },
-  { name: 'Bondy', x: -3.5, y: -0.5, min: 20 },
-  { name: 'Neuilly-Plaisance', x: -1, y: 3.5, min: 20 },
-  { name: 'Rosny-sous-Bois', x: -4, y: 2.5, min: 25 },
-  { name: 'Aulnay-sous-Bois', x: -1, y: -5.5, min: 25 },
-  { name: 'Sevran', x: 3.5, y: -6, min: 30 },
-  { name: 'Noisy-le-Grand', x: 1.5, y: 5.5, min: 30 },
-  { name: 'Chelles', x: 7, y: 2, min: 35 },
-  { name: 'Montreuil', x: -7.5, y: 3.5, min: 40 },
-  { name: 'Noisy-le-Sec', x: -5.5, y: 0.5, min: 30 },
-  { name: 'Coubron', x: 5, y: -3, min: 25 },
-  { name: 'Vaujours', x: 4, y: -4.5, min: 30 },
+  { name: 'Lyon 3e', x: 0, y: 0, min: 10 },
+  { name: 'Villeurbanne', x: 2.5, y: 1.5, min: 15 },
+  { name: 'Lyon 6e', x: -0.5, y: 2, min: 15 },
+  { name: 'Lyon 7e', x: -1.5, y: -2.5, min: 15 },
+  { name: 'Lyon 8e', x: 1.5, y: -3, min: 15 },
+  { name: 'Bron', x: 4.5, y: -2, min: 20 },
+  { name: 'Vaulx-en-Velin', x: 5, y: 3, min: 20 },
+  { name: 'Caluire-et-Cuire', x: -1, y: 4, min: 20 },
+  { name: 'Vénissieux', x: 2, y: -5, min: 25 },
+  { name: 'Oullins', x: -4, y: -4, min: 25 },
+  { name: 'Écully', x: -6, y: 3, min: 25 },
+  { name: 'Sainte-Foy-lès-Lyon', x: -4.5, y: -2.5, min: 25 },
+  { name: 'Tassin-la-Demi-Lune', x: -6.5, y: 0.5, min: 30 },
+  { name: 'Rillieux-la-Pape', x: 2, y: 5.5, min: 30 },
+  { name: 'Décines-Charpieu', x: 6, y: 2, min: 30 },
+  { name: 'Saint-Priest', x: 6.5, y: -5, min: 30 },
+  { name: 'Saint-Fons', x: 0.5, y: -6, min: 30 },
+  { name: 'Meyzieu', x: 7, y: 0, min: 35 },
 ]
 
 export const REVIEWS = [
-  { name: 'Marie D.', place: 'Le Raincy', date: 'il y a 2 semaines', text: 'Fuite sous l’évier réparée le jour même, tarif annoncé au téléphone respecté au centime. Travail propre, explications claires.', tag: 'Fuite d’eau' },
-  { name: 'Karim B.', place: 'Gagny', date: 'il y a 1 mois', text: 'Salle de bain entièrement refaite en 10 jours comme prévu. Le rendu 3D correspondait exactement au résultat. Je recommande à 100 %.', tag: 'Salle de bain' },
-  { name: 'Sophie L.', place: 'Villemomble', date: 'il y a 1 mois', text: 'Ponctuel, souriant et de très bon conseil. Il m’a évité de changer le chauffe-eau alors qu’un autre plombier me l’avait conseillé.', tag: 'Chauffe-eau' },
-  { name: 'Thomas R.', place: 'Livry-Gargan', date: 'il y a 2 mois', text: 'Chaudière en panne un dimanche soir en plein hiver : rappelé en 10 minutes, dépanné le lendemain matin à 8 h. Merci !', tag: 'Chauffage' },
-  { name: 'Nadia K.', place: 'Montfermeil', date: 'il y a 3 mois', text: 'WC bouché, intervention en moins d’une heure. Prix honnête, aucune surprise. Enfin un artisan de confiance.', tag: 'Débouchage' },
-  { name: 'Patrick M.', place: 'Clichy-sous-Bois', date: 'il y a 4 mois', text: 'Entretien annuel de la chaudière effectué avec sérieux, attestation envoyée par mail le soir même. Efficace.', tag: 'Entretien' },
+  { name: 'Marie D.', place: 'Lyon 3e', date: 'il y a 2 semaines', text: 'Fuite sous l’évier réparée le jour même, tarif annoncé au téléphone respecté au centime. Travail propre, explications claires.', tag: 'Fuite d’eau' },
+  { name: 'Karim B.', place: 'Bron', date: 'il y a 1 mois', text: 'Salle de bain entièrement refaite en 10 jours comme prévu. Le rendu 3D correspondait exactement au résultat. Je recommande à 100 %.', tag: 'Salle de bain' },
+  { name: 'Sophie L.', place: 'Villeurbanne', date: 'il y a 1 mois', text: 'Ponctuel, souriant et de très bon conseil. Il m’a évité de changer le chauffe-eau alors qu’un autre plombier me l’avait conseillé.', tag: 'Chauffe-eau' },
+  { name: 'Thomas R.', place: 'Caluire-et-Cuire', date: 'il y a 2 mois', text: 'Chaudière en panne un dimanche soir en plein hiver : rappelé en 10 minutes, dépanné le lendemain matin à 8 h. Merci !', tag: 'Chauffage' },
+  { name: 'Nadia K.', place: 'Vénissieux', date: 'il y a 3 mois', text: 'WC bouché, intervention en moins d’une heure. Prix honnête, aucune surprise. Enfin un artisan de confiance.', tag: 'Débouchage' },
+  { name: 'Patrick M.', place: 'Écully', date: 'il y a 4 mois', text: 'Entretien annuel de la chaudière effectué avec sérieux, attestation envoyée par mail le soir même. Efficace.', tag: 'Entretien' },
 ]
 
 export const PROCESS = [
@@ -166,10 +166,10 @@ const ago = (h: number) => new Date(Date.now() - h * 3_600_000)
 
 /** Demandes déjà « reçues » pour que la boîte de réception ne soit pas vide. */
 export const LEADS = [
-  { kind: 'contact', name: 'Camille Robert', phone: '06 45 12 78 90', city: 'Villemomble', type: 'Fuite d’eau', message: 'Fuite sous l’évier de la cuisine depuis ce matin, j’ai coupé l’arrivée d’eau. Est-ce possible aujourd’hui ?', slot: 'Urgent', status: 'new', createdAt: ago(0.4) },
-  { kind: 'estimation', name: 'Yanis', phone: '07 81 23 45 66', city: null, type: 'Chauffe-eau', message: null, slot: 'Sous 48 h', estimateMin: 500, estimateMax: 750, status: 'new', createdAt: ago(3) },
-  { kind: 'contact', name: 'Hélène Marchand', phone: '06 22 90 14 37', city: 'Gagny', type: 'Salle de bain complète', message: 'Nous voulons refaire la salle de bain (environ 7 m²) avant l’hiver. Douche à l’italienne. Pouvez-vous passer pour un devis ?', slot: 'Après-midi', status: 'new', createdAt: ago(26) },
-  { kind: 'estimation', name: 'Marc', phone: '06 10 55 43 21', city: null, type: 'Canalisation bouchée', message: null, slot: 'Aujourd’hui', estimateMin: 155, estimateMax: 275, status: 'done', createdAt: ago(50) },
-  { kind: 'contact', name: 'Farida Benali', phone: '06 78 34 12 09', city: 'Le Raincy', type: 'Chaudière / chauffage', message: 'Entretien annuel de la chaudière gaz, de préférence un matin.', slot: 'Matin', status: 'done', createdAt: ago(120) },
-  { kind: 'contact', name: 'Antoine Petit', phone: '06 33 21 87 65', city: 'Montfermeil', type: 'Robinet / WC / sanitaire', message: 'Mitigeur de douche qui goutte en permanence.', slot: 'Après-midi', status: 'done', createdAt: ago(200) },
+  { kind: 'contact', name: 'Camille Robert', phone: '06 39 98 78 90', city: 'Villeurbanne', type: 'Fuite d’eau', message: 'Fuite sous l’évier de la cuisine depuis ce matin, j’ai coupé l’arrivée d’eau. Est-ce possible aujourd’hui ?', slot: 'Urgent', status: 'new', createdAt: ago(0.4) },
+  { kind: 'estimation', name: 'Yanis', phone: '06 39 98 45 66', city: null, type: 'Chauffe-eau', message: null, slot: 'Sous 48 h', estimateMin: 500, estimateMax: 750, status: 'new', createdAt: ago(3) },
+  { kind: 'contact', name: 'Hélène Marchand', phone: '06 39 98 14 37', city: 'Bron', type: 'Salle de bain complète', message: 'Nous voulons refaire la salle de bain (environ 7 m²) avant l’hiver. Douche à l’italienne. Pouvez-vous passer pour un devis ?', slot: 'Après-midi', status: 'new', createdAt: ago(26) },
+  { kind: 'estimation', name: 'Marc', phone: '06 39 98 43 21', city: null, type: 'Canalisation bouchée', message: null, slot: 'Aujourd’hui', estimateMin: 155, estimateMax: 275, status: 'done', createdAt: ago(50) },
+  { kind: 'contact', name: 'Farida Benali', phone: '06 39 98 12 09', city: 'Lyon 3e', type: 'Chaudière / chauffage', message: 'Entretien annuel de la chaudière gaz, de préférence un matin.', slot: 'Matin', status: 'done', createdAt: ago(120) },
+  { kind: 'contact', name: 'Antoine Petit', phone: '06 39 98 87 65', city: 'Vénissieux', type: 'Robinet / WC / sanitaire', message: 'Mitigeur de douche qui goutte en permanence.', slot: 'Après-midi', status: 'done', createdAt: ago(200) },
 ]

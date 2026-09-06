@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 
-export const alt = 'Plomberie Martin — Plombier chauffagiste au Raincy (93)'
+export const alt = 'Plomberie Martin — Plombier chauffagiste à Lyon'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -12,7 +12,7 @@ export default async function Image() {
           <div style={{ display: 'flex', width: 64, height: 64, borderRadius: 14, background: '#FFB020', color: '#10284A', alignItems: 'center', justifyContent: 'center', fontSize: 36, fontWeight: 800, marginRight: 18 }}>M</div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', fontSize: 36, fontWeight: 800 }}>Plomberie Martin</div>
-            <div style={{ display: 'flex', fontSize: 18, letterSpacing: 4, color: '#FFB020' }}>PLOMBIER CHAUFFAGISTE · LE RAINCY (93)</div>
+            <div style={{ display: 'flex', fontSize: 18, letterSpacing: 4, color: '#FFB020' }}>PLOMBIER CHAUFFAGISTE · LYON</div>
           </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column' }}>

@@ -104,7 +104,7 @@ export const COLLECTIONS: Record<string, CollectionUI> = {
     fields: [
       { key: 'name', label: 'Commune', type: 'text', required: true },
       { key: 'min', label: 'Délai moyen (min)', type: 'number', required: true, min: 5, step: 5 },
-      { key: 'x', label: 'Position est-ouest (km)', type: 'number', half: true, step: 0.5, help: 'Négatif = à l’ouest du Raincy.' },
+      { key: 'x', label: 'Position est-ouest (km)', type: 'number', half: true, step: 0.5, help: 'Négatif = à l’ouest de Lyon.' },
       { key: 'y', label: 'Position nord-sud (km)', type: 'number', half: true, step: 0.5, help: 'Négatif = au nord.' },
     ],
   },
